@@ -1,0 +1,25 @@
+##Standard run command:
+#dockerX11run -it -v /dev:/dev-host -v ~/hanson:/devel --name=ros --privileged ros-hanson bash
+##Container will need to access host's webcam, hence the --privileged flag
+FROM ros
+
+#Python package managers
+RUN mkdir /builds
+RUN wget -P /builds https://bootstrap.pypa.io/ez_setup.py https://bootstrap.pypa.io/get-pip.py && \
+python2 /builds/ez_setup.py && python3 /builds/ez_setup.py && python2 /builds/get-pip.py
+
+RUN apt-get install -y python3-yaml
+
+#uvc_cam dependencies
+RUN apt-get install -y ros-indigo-image-transport ros-indigo-tf ros-indigo-camera-info-manager ros-indigo-driver-base
+
+#pi_vision dependencies
+RUN apt-get install -y ros-indigo-cv-bridge ros-indigo-mjpeg-server ros-indigo-openni-camera
+
+#eva_behavior dependencies
+RUN pip2 install owyl
+
+#Python3 ROS support for Blender
+WORKDIR /builds
+RUN git clone git://github.com/ros/rospkg.git && cd rospkg && python3 setup.py install && cd .. && \
+git clone git://github.com/ros-infrastructure/catkin_pkg.git && cd catkin_pkg && python3 setup.py install && cd ..
