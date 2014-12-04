@@ -11,7 +11,7 @@ python2 /builds/ez_setup.py && python3 /builds/ez_setup.py && python2 /builds/ge
 RUN apt-get install -y python3-yaml
 
 #ros_motors_webui dependencies
-RUN apt-get install ros-indigo-rosbridge-server
+RUN apt-get install -y ros-indigo-rosbridge-server
 
 #uvc_cam dependencies
 RUN apt-get install -y ros-indigo-image-transport ros-indigo-tf ros-indigo-camera-info-manager ros-indigo-driver-base
