@@ -1,0 +1,26 @@
+FROM ubuntu
+
+RUN apt-get update && apt-get install -y \
+    cvs \
+    build-essential \
+    openjdk-7-jdk \
+    sox \
+    libasound2-dev \
+    libjpeg-dev \
+    libpng12-dev \
+    libreadline-dev \
+    libxml2-dev \
+    libncurses5-dev \
+    ruby
+
+RUN gem install plist treetop
+RUN PERL_MM_USE_DEFAULT=1 perl -MCPAN -e "install Parse::RecDescent"
+RUN cd /usr/local && cvs -d :pserver:anonymous@cvs.tekkotsu.org:/cvs co -P Tekkotsu
+
+RUN make -C /usr/local/Tekkotsu/tools/filtersyswarn && \
+    make -C /usr/local/Tekkotsu/tools/dynamixel_util
+
+## To build and and extract dynamixel_util, run these commands:
+# docker build -t tekkotsu-dxl - <tekkotsu-dxl
+# docker run --name=tekkotsu-dxl tekkotsu-dxl
+# docker cp tekkotsu-dxl:/usr/local/Tekkotsu/tools/dynamixel_util/dynamixel_util .
