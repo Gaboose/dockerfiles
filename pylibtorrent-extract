@@ -1,0 +1,19 @@
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y \
+    python-libtorrent
+
+RUN mkdir /build
+
+CMD cd /build && \
+    cp /usr/lib/python2.7/dist-packages/libtorrent.so \
+       /usr/lib/python2.7/dist-packages/python_libtorrent-*.egg-info \
+       /usr/lib/libtorrent-rasterbar.so.7.0.0 \
+       /usr/lib/x86_64-linux-gnu/libboost_system.so.1.* \
+       /usr/lib/x86_64-linux-gnu/libboost_python-py27.so.1.* \
+       /usr/lib/x86_64-linux-gnu/libGeoIP.so.1.* \
+       -t . && \
+    ln -sr libtorrent-rasterbar.so.7.0.0 libtorrent-rasterbar.so.7 && \
+    ln -sr libGeoIP.so.1.* libGeoIP.so.1 && \
+    chown -R 1000 . && \
+    chgrp -R 1000 .
