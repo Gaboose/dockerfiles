@@ -1,5 +1,7 @@
 FROM ubuntu:trusty
 
+RUN echo "source ~/.bashrc" >> ~/.bash_profile
+
 # General dependencies
 RUN apt-get update && apt-get install -y \
     wget \
@@ -29,14 +31,14 @@ RUN apt-get install -y \
     hark-python
 
 # Install ALSA for microphone access
-RUN apt-get install -y alsa-utils && \
-    find /dev/snd/ -mindepth 1 -exec chgrp audio {} \;
+RUN apt-get install -y alsa-utils
 
 # Add a non-root sudo user. It's required to run hark_designer.
 RUN useradd user -mG sudo,audio && \
 # Password is "user"
     echo user:user | chpasswd && \
 # Add user to the 'audio' group to give access to a microphone through ALSA.
-    usermod -aG audio user
-
-USER user
+    usermod -aG audio user && \
+# Change group of /dev/snd/* on login, because the devices don't exist until
+# the container is run in '--privileged' mode.
+    echo "find /dev/snd/ -mindepth 1 -exec chgrp audio {} \;" >> ~/.bashrc
